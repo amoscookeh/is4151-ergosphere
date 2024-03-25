@@ -1,6 +1,6 @@
 import mongo from "./db";
 
-const sampleDB = mongo.db("test_db");
-const sampleCollection = sampleDB.collection("test_collection");
+const devDB = mongo.db("dev_db");
+const devUserCollection = devDB.collection("users");
 
-export { sampleDB, sampleCollection };
+export { devUserCollection };
