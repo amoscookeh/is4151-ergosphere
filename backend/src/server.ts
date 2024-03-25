@@ -1,18 +1,25 @@
 import express from "express";
 import { createServer, Server as HTTPServer } from "http";
-import { sampleFetch } from "./services/database/sample";
 import getEnv from "./services/envHandler";
+import cors from "cors";
+
+import UserRouter from "./routes/userRoutes";
 
 const app = express();
 const httpServer: HTTPServer = createServer(app);
 
 // Middleware
 app.use(express.json());
+app.use(cors());
+
+// API Routes
+const apiRouter = express.Router();
+apiRouter.get("/", (req, res) => res.send("ErgoSphere API is running"));
+apiRouter.use("/user", UserRouter);
 
 // Routes
-app.get("/", (req, res) => res.send("ErgoSphere API is running"));
-// Route to test database connection
-app.get("/test_db", async (req, res) => res.send(await sampleFetch()));
+app.get("/", (req, res) => res.send("ErgoSphere Backend is running"));
+app.use("/api", apiRouter);
 
 // Start the server
 const PORT = getEnv("REACT_APP_BACKEND_PORT") || 3000;
