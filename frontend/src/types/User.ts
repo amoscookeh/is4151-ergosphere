@@ -4,6 +4,7 @@ interface User {
   lastName: string;
   username: string;
   password: string;
+  hardwareDeviceId: string;
 }
 
 export default User;
