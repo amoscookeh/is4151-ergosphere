@@ -24,6 +24,7 @@ const Register: React.FC = () => {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [hardwareDeviceId, setHardwareDeviceId] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -36,6 +37,7 @@ const Register: React.FC = () => {
         lastName,
         username,
         password,
+        hardwareDeviceId,
       });
       if (user) {
         login();
@@ -112,6 +114,14 @@ const Register: React.FC = () => {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+              </FormControl>
+              <FormControl id="hardwareDeviceId" isRequired>
+                <FormLabel>Hardware Device ID</FormLabel>
+                <Input
+                  type="text"
+                  value={hardwareDeviceId}
+                  onChange={(e) => setHardwareDeviceId(e.target.value)}
+                />
               </FormControl>
               <Stack pt={6}>
                 <Text align={"center"}>

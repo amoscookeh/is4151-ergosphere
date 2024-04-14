@@ -9,16 +9,11 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {
-  MdWbSunny,
-  MdOutlineWaterDrop,
-  MdEmojiEmotions,
-  MdLocalDrink,
-} from "react-icons/md";
+import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
 
 const Dashboard: React.FC = () => {
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated, setHydrated] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
