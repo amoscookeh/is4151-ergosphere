@@ -8,6 +8,7 @@ Microbit serial
 
 from lib.serial_reader import MicrobitReader
 from picamera2 import Picamera2
+from device_id import Device
 from datetime import datetime
 import cv2
 import os
@@ -27,12 +28,13 @@ def capture_image():
 	filename = os.path.join(image_folder, f'{time}.png')
 	cv2.imwrite(filename, img)
 	button, distance = microbit.read_serial()
-	print(filename, distance, button)
+	device_id = Device.getserial()
+	print(device_id, time, filename, distance, button)
 	conn = sqlite3.connect(db_file)
 	conn.execute('''INSERT INTO camera
-				       (time, img_file, distance, button) VALUES
-				       (?, ?, ?, ?)''',
-				       (time, filename, distance, button))
+				       (device_id, time, img_file, distance, button) VALUES
+				       (?, ?, ?, ?, ?)''',
+				       (device_id, time, filename, distance, button))
 	conn.commit()
 	conn.close()
 	
@@ -47,6 +49,7 @@ def main():
 	
 	conn = sqlite3.connect(db_file)
 	conn.execute('''CREATE TABLE IF NOT EXISTS camera (
+			  			device_id TEXT,
 						time TEXT ,
 						img_file TEXT,
 						distance REAL,
