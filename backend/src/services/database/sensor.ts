@@ -1,27 +1,23 @@
 import { ObjectId } from "mongodb";
 import SensorData from "../../types/SensorData";
 import { sensorDataCollection } from "./collections";
+import { getUserById } from "./users";
 
 /* Get all sensor data */
-const getAllSensorData = async (): Promise<SensorData[]> => {
-    let allSensorData;
+const getAllSensorData = async (userId: string): Promise<SensorData> => {
+    let sensorData;
     try {  
-        allSensorData = (await sensorDataCollection.find().toArray()) as unknown as SensorData[];
+      const user = await getUserById(userId);
+      if (!user) {
+        throw new Error("Login user not found");
+      }
+      sensorData = (await sensorDataCollection
+        .findOne(
+          { hardwareDeviceId: user.hardwareDeviceId }, 
+          { sort: { timestamp: -1 } }
+      )) as unknown as SensorData;
     } catch (error) {
       throw new Error(`Error finding all sensor data: ${error}`);
-    }
-    return allSensorData;
-};
-
-/* Get sensor data by sensorDataId */
-const getSensorDataById = async (id: string): Promise<SensorData | undefined> => {
-    let sensorData;
-    try {
-      sensorData = (await sensorDataCollection.findOne({
-        _id: new ObjectId(id),
-      })) as unknown as SensorData;
-    } catch (error) {
-      throw new Error(`Error finding sensor data: ${error}`);
     }
     return sensorData;
 };
@@ -46,5 +42,5 @@ try {
 return true;
 };
 
-export { getAllSensorData, getSensorDataById, insertSensorData, deleteSensorData };
+export { getAllSensorData, insertSensorData, deleteSensorData };
   

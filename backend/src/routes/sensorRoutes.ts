@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   getAllSensorData,
-  getSensorDataById,
   insertSensorData,
   deleteSensorData,
 }
@@ -10,22 +9,12 @@ import SensorData from "../types/SensorData";
 
 const SensorDataRouter = Router();
 
-SensorDataRouter.get("/", async (req, res) => {
-  const allSensorData = await getAllSensorData();
+SensorDataRouter.get("/:userId", async (req, res) => {
+  const allSensorData = await getAllSensorData(req.params.userId);
   if (allSensorData) {
     res.status(200).send(allSensorData);
   } else {
-    res.status(404).send("All sensor data not found");
-  }
-});
-
-SensorDataRouter.get("/:id", async (req, res) => {
-  const sensorDataId = req.params.id;
-  const sensorData = await getSensorDataById(sensorDataId);
-  if (sensorData) {
-    res.status(200).send(sensorData);
-  } else {
-    res.status(404).send("Sensor data not found");
+    res.status(404).send("Sensor data not found for this user");
   }
 });
 
