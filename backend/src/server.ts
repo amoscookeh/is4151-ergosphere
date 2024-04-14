@@ -4,6 +4,7 @@ import getEnv from "./services/envHandler";
 import cors from "cors";
 
 import UserRouter from "./routes/userRoutes";
+import SensorDataRouter from "./routes/sensorRoutes";
 
 const app = express();
 const httpServer: HTTPServer = createServer(app);
@@ -16,6 +17,7 @@ app.use(cors());
 const apiRouter = express.Router();
 apiRouter.get("/", (req, res) => res.send("ErgoSphere API is running"));
 apiRouter.use("/user", UserRouter);
+apiRouter.use("/sensor", SensorDataRouter);
 
 // Routes
 app.get("/", (req, res) => res.send("ErgoSphere Backend is running"));
