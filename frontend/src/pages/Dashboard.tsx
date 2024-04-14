@@ -11,25 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
+import Posture from "../components/Posture";
 
 const Dashboard: React.FC = () => {
-  const [hydrated, setHydrated] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch((error) => {
-          console.error("Error accessing the camera: ", error);
-        });
-    }
-  }, []);
+  const [hydrated, setHydrated] = useState(false);
 
   return (
     <Flex direction="column" align="center" m={4}>
@@ -41,7 +26,7 @@ const Dashboard: React.FC = () => {
         rounded="md"
         boxShadow="md"
       >
-        <video ref={videoRef} autoPlay playsInline width="400" height="300" />
+        <Posture />
       </Box>
 
       <Stack spacing={6} mt={6} align="center">
