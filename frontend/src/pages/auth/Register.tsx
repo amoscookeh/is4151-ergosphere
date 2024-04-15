@@ -27,7 +27,7 @@ const Register: React.FC = () => {
   const [hardwareDeviceId, setHardwareDeviceId] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, setDevice, setUser } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -39,8 +39,10 @@ const Register: React.FC = () => {
         password,
         hardwareDeviceId,
       });
-      if (user) {
+      if (user && user._id) {
         login();
+        setDevice(user.hardwareDeviceId);
+        setUser(user._id);
         navigate("/dashboard");
       }
     } catch (error) {
