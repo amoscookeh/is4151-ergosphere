@@ -5,6 +5,7 @@ terminate_scripts() {
     echo "Terminating data collector and child scripts..."
     kill -TERM $DEVICE_READER_PID
     kill -TERM $RPI_CAMERA_LABELLING_PID
+    kill -TERM $RPI_CAMERA_STREAM_PID
     echo "Exiting main script..."
     exit 0
 }
@@ -22,8 +23,10 @@ fi
 # Run data collection processes
 python3 ./Project/I2C-devices-reader.py &
 DEVICE_READER_PID=$!
-python3 /home/pi/Desktop/Project/rpi-camera_labelling.py &
-RPI_CAMERA_LABELLING_PID=$!
+# python3 ./Project/rpi-camera_labelling.py &
+# RPI_CAMERA_LABELLING_PID=$!
+python3 ./Project/rpi-camera-stream.py &
+RPI_CAMERA_STREAM_PID=$!
 
 # Run the uploader script periodically
 while true; do

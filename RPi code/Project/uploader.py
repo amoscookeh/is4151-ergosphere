@@ -12,7 +12,8 @@ db_file = "/home/pi/Desktop/Project/database.db"
 period = 10
 
 # TODO: Change the base_uri when backend is hosted
-base_uri = "http://localhost:3001/"
+# base_uri = "http://localhost:3001/"
+base_uri = "http://192.168.43.30:3001/"
 sensor_uri = base_uri + "api/sensor"
 camera_uri = base_uri + "api/camera"
 headers = {'Content-Type': 'application/json'}
