@@ -5,42 +5,42 @@ import { getUserById } from "./users";
 
 /* Get all sensor data */
 const getAllSensorData = async (userId: string): Promise<SensorData> => {
-    let sensorData;
-    try {  
-      const user = await getUserById(userId);
-      if (!user) {
-        throw new Error("Login user not found");
-      }
-      sensorData = (await sensorDataCollection
-        .findOne(
-          { hardwareDeviceId: user.hardwareDeviceId }, 
-          { sort: { timestamp: -1 } }
-      )) as unknown as SensorData;
-    } catch (error) {
-      throw new Error(`Error finding all sensor data: ${error}`);
+  let sensorData;
+  try {
+    const user = await getUserById(userId);
+    if (!user) {
+      throw new Error("Login user not found");
     }
-    return sensorData;
+    sensorData = (await sensorDataCollection.findOne(
+      { hardwareDeviceId: user.hardwareDeviceId },
+      { sort: { time: -1 } }
+    )) as unknown as SensorData;
+  } catch (error) {
+    throw new Error(`Error finding all sensor data: ${error}`);
+  }
+  return sensorData;
 };
 
 /* Insert sensor data */
-const insertSensorData = async (sensorData: SensorData): Promise<SensorData> => {
-    try {
-        await sensorDataCollection.insertOne({ ...sensorData });
-    } catch (error) {
-      throw new Error(`Error inserting sensor data: ${error}`);
-    }
-    return sensorData;
+const insertSensorData = async (
+  sensorData: SensorData
+): Promise<SensorData> => {
+  try {
+    await sensorDataCollection.insertOne({ ...sensorData });
+  } catch (error) {
+    throw new Error(`Error inserting sensor data: ${error}`);
+  }
+  return sensorData;
 };
-  
+
 /* Delete sensor data */
 const deleteSensorData = async (sensorId: string): Promise<boolean> => {
-try {
+  try {
     await sensorDataCollection.deleteOne({ _id: new ObjectId(sensorId) });
-} catch (error) {
+  } catch (error) {
     throw new Error(`Error deleting user: ${error}`);
-}
-return true;
+  }
+  return true;
 };
 
 export { getAllSensorData, insertSensorData, deleteSensorData };
-  

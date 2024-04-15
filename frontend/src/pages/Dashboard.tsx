@@ -13,9 +13,26 @@ import {
 import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
 import Posture from "../components/Posture";
+import { fetchSensorData } from "../services/api/sensorData";
+import { useAuth } from "../context/authContext";
 
 const Dashboard: React.FC = () => {
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated, setHydrated] = useState(true);
+  const [temp, setTemp] = useState(32);
+  const [humidity, setHumidity] = useState(45);
+  const [lux, setLux] = useState(655);
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const data = await fetchSensorData(userId);
+      console.log(data);
+      setTemp(data.temperature);
+      setHumidity(data.humidity);
+      setLux(data.lightLevel);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Flex direction="column" align="center" m={4}>
@@ -33,14 +50,15 @@ const Dashboard: React.FC = () => {
         <Flex w="50%" direction="column" align="center" ml={6}>
           <Stack spacing={6} mt={6} align="center">
             <Text fontSize="2xl">
-              <Icon as={FaTemperatureHigh} color="orange.400" /> Temperature:
-              72°F
+              <Icon as={FaTemperatureHigh} color="orange.400" /> Temperature:{" "}
+              {temp}°C
             </Text>
             <Text fontSize="2xl">
-              <Icon as={FaTint} color="blue.400" /> Humidity: 45%
+              <Icon as={FaTint} color="blue.400" /> Humidity:{" "}
+              {Math.floor(humidity)}%
             </Text>
             <Text fontSize="2xl">
-              <Icon as={MdWbSunny} color="yellow.400" /> Light Intensity: 300
+              <Icon as={MdWbSunny} color="yellow.400" /> Light Intensity: {lux}{" "}
               Lux
             </Text>
           </Stack>
