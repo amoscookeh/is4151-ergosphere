@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, setDevice } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,6 +32,7 @@ const Login: React.FC = () => {
       const user = await loginUser({ username, password });
       if (user) {
         login();
+        setDevice(user.hardwareDeviceId);
         navigate("/dashboard");
       }
     } catch (error) {
