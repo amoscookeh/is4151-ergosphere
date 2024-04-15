@@ -1,9 +1,19 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useEffect, useState } from "react";
-import { Camera } from "@mediapipe/camera_utils";
 import { Pose, POSE_CONNECTIONS, POSE_LANDMARKS } from "@mediapipe/pose";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
-import { Box, Text, useColorModeValue, Flex, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  useColorModeValue,
+  Flex,
+  Icon,
+  Center,
+  Spinner,
+} from "@chakra-ui/react";
 import { MdThumbUp, MdThumbDown } from "react-icons/md";
+import { useAuth } from "../context/authContext";
 
 function calculateAngle(
   x1: number,
@@ -19,20 +29,22 @@ function calculateAngle(
 }
 
 const Posture = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isGoodPosture, setIsGoodPosture] = useState(true);
+  const { deviceId } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const wsUrl = `ws://localhost:3001/videofeed?device_id=${deviceId}`;
+  console.log("Connecting to: " + wsUrl);
 
   useEffect(() => {
-    const videoElement = videoRef.current;
+    const ws = new WebSocket(wsUrl);
+    const pose = new Pose({
+      locateFile: (file) =>
+        `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+    });
     const canvasElement = canvasRef.current;
     const canvasCtx = canvasElement?.getContext("2d");
-
-    const pose = new Pose({
-      locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-      },
-    });
 
     pose.setOptions({
       modelComplexity: 1,
@@ -42,6 +54,37 @@ const Posture = () => {
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5,
     });
+
+    ws.onmessage = async (event) => {
+      if (event.data instanceof Blob) {
+        const text = await event.data.text();
+        try {
+          const data = JSON.parse(text);
+          if (data.frame) {
+            const byteArray = new Uint8Array(
+              data.frame.match(/[\da-f]{2}/gi).map((h: any) => parseInt(h, 16))
+            );
+            const blob = new Blob([byteArray.buffer], { type: "image/jpeg" });
+            const url = URL.createObjectURL(blob);
+            if (videoRef.current) {
+              videoRef.current.onload = () => {
+                if (videoRef.current) {
+                  pose
+                    .send({ image: videoRef.current })
+                    .then(() => {
+                      URL.revokeObjectURL(url);
+                    })
+                    .catch(console.error);
+                }
+              };
+              videoRef.current.src = url;
+            }
+          }
+        } catch (err) {
+          console.error("Error parsing JSON or handling frame data:", err);
+        }
+      }
+    };
 
     pose.onResults((results) => {
       if (canvasCtx && canvasElement) {
@@ -92,44 +135,42 @@ const Posture = () => {
             lineWidth: 4,
           });
           drawLandmarks(canvasCtx, lm, { color: "white", radius: 2 });
+          setIsLoading(false);
         }
         canvasCtx.restore();
       }
     });
-
-    if (videoElement) {
-      const camera = new Camera(videoElement, {
-        onFrame: async () => {
-          await pose.send({ image: videoElement });
-        },
-        width: 640,
-        height: 480,
-      });
-      camera.start();
-    }
   }, []);
 
   return (
     <Flex direction="column" align="center" gap="4">
-      <Box position="relative" width="640px" height="480px">
-        <video ref={videoRef} style={{ display: "none" }} playsInline />
-        <canvas ref={canvasRef} width="640" height="480" />
+      <Box display={isLoading ? "none" : "block"}>
+        <Box position="relative" width="640px" height="480px">
+          <img src={""} ref={videoRef} style={{ display: "none" }} />
+          <canvas ref={canvasRef} width="640" height="480" />
+        </Box>
+        <Flex align="center" justify="center" p={4}>
+          <Icon
+            as={isGoodPosture ? MdThumbUp : MdThumbDown}
+            w={8}
+            h={8}
+            color={isGoodPosture ? "green.500" : "red.500"}
+          />
+          <Text
+            fontSize="xl"
+            ml={2}
+            color={useColorModeValue("gray.800", "white")}
+          >
+            {isGoodPosture ? "Good Posture" : "Please Adjust Posture"}
+          </Text>
+        </Flex>
       </Box>
-      <Flex align="center" justify="center" p={4}>
-        <Icon
-          as={isGoodPosture ? MdThumbUp : MdThumbDown}
-          w={8}
-          h={8}
-          color={isGoodPosture ? "green.500" : "red.500"}
-        />
-        <Text
-          fontSize="xl"
-          ml={2}
-          color={useColorModeValue("gray.800", "white")}
-        >
-          {isGoodPosture ? "Good Posture" : "Please Adjust Posture"}
-        </Text>
-      </Flex>
+      {isLoading && (
+        <Center flexDirection="column" height="480px">
+          <Spinner size="xl" />
+          <Text mt={3}>Loading camera feed, please wait...</Text>
+        </Center>
+      )}
     </Flex>
   );
 };
