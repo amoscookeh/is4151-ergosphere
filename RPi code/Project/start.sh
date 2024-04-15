@@ -1,6 +1,17 @@
 #!/bin/bash
 
-# Run this from Desktop directory of the project
+# Function to handle SIGINT signal
+terminate_scripts() {
+    echo "Terminating data collector and child scripts..."
+    kill -TERM $DEVICE_READER_PID
+    kill -TERM $RPI_CAMERA_LABELLING_PID
+    echo "Exiting main script..."
+    exit 0
+}
+
+# Set up trap for SIGINT
+trap 'terminate_scripts' SIGINT
+
 # Check if the time interval is provided as a command line argument
 if [ $# -eq 0 ]; then
     interval=5
@@ -8,8 +19,11 @@ else
     interval=$1
 fi
 
-# Start the data collector script in the background
-./Project/run_data_collector.sh &
+# Run data collection processes
+python3 ./Project/I2C-devices-reader.py &
+DEVICE_READER_PID=$!
+python3 /home/pi/Desktop/Project/rpi-camera_labelling.py &
+RPI_CAMERA_LABELLING_PID=$!
 
 # Run the uploader script periodically
 while true; do
