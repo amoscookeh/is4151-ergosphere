@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { publishMqttMessage } from "../services/mqtt/mqttClient";
+import {
+  LightCommandMessageInterface,
+  sendLightControlCommand,
+} from "../services/lightControl";
 
 const CommandRouter = Router();
-
-interface LightCommandMessageInterface {
-  command: string;
-  intensity?: number;
-  colour?: string;
-}
 
 CommandRouter.post("/", async (req, res) => {
   try {
@@ -16,7 +14,7 @@ CommandRouter.post("/", async (req, res) => {
       intensity: req.body.intensity,
       colour: req.body.colour,
     };
-    publishMqttMessage(JSON.stringify(message));
+    sendLightControlCommand(message);
     res.send("Command sent");
   } catch (err: any) {
     console.error(err);

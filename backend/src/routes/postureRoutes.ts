@@ -28,7 +28,6 @@ PostureDataRouter.get("/latest/:userId", async (req, res) => {
 });
 
 PostureDataRouter.post("/", async (req, res) => {
-  console.log(req.body);
   const newPostureData = {
     hardwareDeviceId: req.body.device_id,
     time: req.body.time,

@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { SensorData } from "../../types/Data";
 import { sensorDataCollection } from "./collections";
 import { getUserById } from "./users";
+import { optimiseLight } from "../mqtt/smartLight";
 
 /* Get all sensor data */
 const getAllSensorData = async (userId: string): Promise<SensorData> => {

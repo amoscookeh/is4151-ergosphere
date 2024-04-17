@@ -54,3 +54,4 @@ yarn.lock
 *.tmp
 *.temp
 *.sass-cache
+*.pyc
