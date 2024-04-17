@@ -1,7 +1,7 @@
 import connexion
 
 app = connexion.App(__name__, specification_dir='./')
-app.add_api('cloud.yml')
+app.add_api('app.yml')
 
 @app.route('/')
 def index():

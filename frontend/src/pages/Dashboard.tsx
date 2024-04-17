@@ -26,7 +26,6 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(async () => {
       const data = await fetchSensorData(userId);
-      console.log(data);
       setTemp(data.temperature);
       setHumidity(data.humidity);
       setLux(data.lightLevel);

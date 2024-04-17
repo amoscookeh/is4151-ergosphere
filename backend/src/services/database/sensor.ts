@@ -16,7 +16,6 @@ const getAllSensorData = async (userId: string): Promise<SensorData> => {
       { hardwareDeviceId: user.hardwareDeviceId },
       { sort: { time: -1 } }
     )) as unknown as SensorData;
-    optimiseLight(sensorData.lightLevel);
   } catch (error) {
     throw new Error(`Error finding all sensor data: ${error}`);
   }
@@ -29,7 +28,6 @@ const insertSensorData = async (
 ): Promise<SensorData> => {
   try {
     await sensorDataCollection.insertOne({ ...sensorData });
-    optimiseLight(sensorData.lightLevel);
   } catch (error) {
     throw new Error(`Error inserting sensor data: ${error}`);
   }
