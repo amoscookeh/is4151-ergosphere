@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdThumbUp, MdThumbDown } from "react-icons/md";
 import { useAuth } from "../context/authContext";
+import { insertPostureData } from "../services/api/postureData";
 
 function calculateAngle(
   x1: number,
@@ -128,6 +129,20 @@ const Posture = () => {
 
           const isGoodPosture = neckAngle < 40 && torsoAngle < 10;
           setIsGoodPosture(isGoodPosture);
+
+          if (isGoodPosture) {
+            insertPostureData({
+              device_id: deviceId,
+              time: new Date().toISOString(),
+              postureScore: 10,
+            });
+          } else {
+            insertPostureData({
+              device_id: deviceId,
+              time: new Date().toISOString(),
+              postureScore: 0,
+            });
+          }
 
           // Visual feedback
           drawConnectors(canvasCtx, lm, POSE_CONNECTIONS, {

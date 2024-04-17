@@ -5,6 +5,9 @@ import getEnv from "./services/envHandler";
 import cors from "cors";
 import UserRouter from "./routes/userRoutes";
 import SensorDataRouter from "./routes/sensorRoutes";
+import PostureDataRouter from "./routes/postureRoutes";
+import { connectMqttClient } from "./services/mqtt/mqttClient";
+import CommandRouter from "./routes/commandRoutes";
 
 const app = express();
 const httpServer: HTTPServer = createServer(app);
@@ -14,7 +17,7 @@ const wss = new WebSocketServer({ server: httpServer });
 app.use(express.json());
 app.use(cors());
 
-// Maintain a map of connected WebSockets by device_id
+// Web Sockets
 const clients = new Map();
 
 wss.on("connection", (ws, req: any) => {
@@ -71,6 +74,11 @@ const apiRouter = express.Router();
 apiRouter.get("/", (req, res) => res.send("ErgoSphere API is running"));
 apiRouter.use("/user", UserRouter);
 apiRouter.use("/sensor", SensorDataRouter);
+apiRouter.use("/posture", PostureDataRouter);
+apiRouter.use("/command", CommandRouter);
+
+// MQTT
+connectMqttClient();
 
 // Routes
 app.get("/", (req, res) => res.send("ErgoSphere Backend is running"));

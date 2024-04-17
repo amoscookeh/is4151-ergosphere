@@ -23,14 +23,14 @@ export function connectMqttClient(): void {
     console.log("Connected to MQTT Broker!");
   });
 
-  client.on("error", (err) => {
+  client.on("error", (err: any) => {
     console.error("Failed to connect to MQTT Broker:", err);
   });
 }
 
 export function publishMqttMessage(message: string): void {
   if (client && client.connected) {
-    client.publish(topic, message, (err, packet) => {
+    client.publish(topic, message, (err: any, packet: any) => {
       if (err) {
         console.error("Failed to publish message:", err);
       } else {

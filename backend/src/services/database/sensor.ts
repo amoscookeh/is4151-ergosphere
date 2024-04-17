@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import SensorData from "../../types/SensorData";
+import { SensorData } from "../../types/Data";
 import { sensorDataCollection } from "./collections";
 import { getUserById } from "./users";
 

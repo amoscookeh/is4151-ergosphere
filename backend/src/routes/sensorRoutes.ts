@@ -3,9 +3,8 @@ import {
   getAllSensorData,
   insertSensorData,
   deleteSensorData,
-}
-from "../services/database/sensor";
-import SensorData from "../types/SensorData";
+} from "../services/database/sensor";
+import { SensorData } from "../types/Data";
 
 const SensorDataRouter = Router();
 
@@ -25,7 +24,7 @@ SensorDataRouter.post("/", async (req, res) => {
     lightLevel: req.body.light_level,
     temperature: req.body.temperature,
     humidity: req.body.humidity,
-  }
+  };
   const sensorData = await insertSensorData(newSensorData as SensorData);
   if (sensorData) {
     res.status(200).send(sensorData);
