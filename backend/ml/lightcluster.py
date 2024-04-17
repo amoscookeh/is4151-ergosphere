@@ -5,9 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
-from joblib import dump, load
-
-
+from joblib import dump
 
 def main():
     
