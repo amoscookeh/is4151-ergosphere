@@ -10,7 +10,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
+import { MdWbSunny, MdEmojiEmotions, MdLocalDrink, MdWaterDrop } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
 import Posture from "../components/Posture";
 import { fetchSensorData } from "../services/api/sensorData";
@@ -18,6 +18,7 @@ import { fetchHydrationStatus as apiFetchHydrationStatus } from "../services/api
 import { useAuth } from "../context/authContext";
 
 const Dashboard: React.FC = () => {
+  const [timeToHydrate, setTimeToHydrate] = useState(0);
   const [hydrated, setHydrated] = useState<boolean>(true);
   const [temp, setTemp] = useState(32);
   const [humidity, setHumidity] = useState(45);
@@ -34,29 +35,22 @@ const Dashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     const data = await apiFetchHydrationStatus(userId);
-  //     console.log(data)
-  //     setHydrated(false);
-  //   }, 3600000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
   useEffect(() => {
     const fetchHydrationStatus = async () => {
       try {
         const response = await apiFetchHydrationStatus(userId);
-        console.log(response);
-        setHydrated(false);
+        console.log(response)
+        setTimeToHydrate(Math.round(response * 60));
       } catch (error) {
         console.error('Error fetching hydration status:', error);
       }
     };
   
-    const interval = setInterval(fetchHydrationStatus, 5000); // Check every 1 hour
-
-    return () => clearInterval(interval);
+    fetchHydrationStatus();
+    const interval = setInterval(fetchHydrationStatus, 30 * 60 * 1000);
+    return () => {
+      clearInterval(interval)
+    }
   }, []);
   
 
@@ -86,6 +80,10 @@ const Dashboard: React.FC = () => {
             <Text fontSize="2xl">
               <Icon as={MdWbSunny} color="yellow.400" /> Light Intensity: {lux}{" "}
               Lux
+            </Text>
+            <Text fontSize="2xl">
+              <Icon as={MdWaterDrop} color="yellow.400" /> Time to hydrate: {timeToHydrate}{" "}
+              mins
             </Text>
           </Stack>
           <Box

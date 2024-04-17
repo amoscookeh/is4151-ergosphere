@@ -11,6 +11,6 @@ export const updateHydrationStatus = (requireHydration: boolean): void => {
     return;
 };
 
-export const fetchHydrationStatus = (userId: string): Promise<boolean> => {
+export const fetchHydrationStatus = (userId: string): Promise<number> => {
     return api.get(`/${userId}`).then(res => res.data);
 };

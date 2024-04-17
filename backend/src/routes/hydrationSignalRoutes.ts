@@ -20,9 +20,7 @@ hydrationSignalRouter.get("/:userId", async (req, res) => {
         const response = await fetch(`${temp_humidity_prediction_uri}?hour=${hour}&day_of_week=${dayOfWeek}&temperature=${temp}&humidity=${humidity}`);
         const data = await response.text();  
         console.log('Prediction result:', data);
-
-        // Use the data as needed
-        return data;  // Return the data for further processing or storage
+        res.status(200).send(data)
     } catch (error) {
         console.error('Error during fetch:', error);
         return null;  // Handle the error case appropriately
