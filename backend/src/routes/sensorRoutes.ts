@@ -3,6 +3,7 @@ import {
   getAllSensorData,
   insertSensorData,
   deleteSensorData,
+  optimiseLightData,
 } from "../services/database/sensor";
 import { SensorData } from "../types/Data";
 
@@ -30,6 +31,16 @@ SensorDataRouter.post("/", async (req, res) => {
     res.status(200).send(sensorData);
   } else {
     res.status(404).send("Sensor data failed to insert");
+  }
+});
+
+SensorDataRouter.post("/optimise_light", async (req, res) => {
+  const lightLevel = req.body.light_level;
+  const lightLevelClassification = await optimiseLightData(lightLevel);
+  if (lightLevelClassification) {
+    res.status(200).send({ lightLevelClassification });
+  } else {
+    res.status(404).send("Light level optimisation failed");
   }
 });
 
