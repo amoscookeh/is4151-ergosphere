@@ -34,20 +34,31 @@ const Dashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     const data = await apiFetchHydrationStatus(userId);
+  //     console.log(data)
+  //     setHydrated(false);
+  //   }, 3600000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
     const fetchHydrationStatus = async () => {
       try {
-        const response = await apiFetchHydrationStatus();
-        setHydrated(!response);
+        const response = await apiFetchHydrationStatus(userId);
+        console.log(response);
+        setHydrated(false);
       } catch (error) {
         console.error('Error fetching hydration status:', error);
       }
     };
-
-    const interval = setInterval(fetchHydrationStatus, 3600000); // Check every 1 hour
+  
+    const interval = setInterval(fetchHydrationStatus, 5000); // Check every 1 hour
 
     return () => clearInterval(interval);
   }, []);
+  
 
   return (
     <Flex direction="column" align="center" m={4}>

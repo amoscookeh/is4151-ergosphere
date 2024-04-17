@@ -11,6 +11,6 @@ export const updateHydrationStatus = (requireHydration: boolean): void => {
     return;
 };
 
-export const fetchHydrationStatus = (): Promise<boolean> => {
-    return axios.get('/api/hydration').then(res => res.data);
+export const fetchHydrationStatus = (userId: string): Promise<boolean> => {
+    return api.get(`/${userId}`).then(res => res.data);
 };

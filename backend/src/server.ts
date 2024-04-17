@@ -8,6 +8,7 @@ import SensorDataRouter from "./routes/sensorRoutes";
 import PostureDataRouter from "./routes/postureRoutes";
 import { connectMqttClient } from "./services/mqtt/mqttClient";
 import CommandRouter from "./routes/commandRoutes";
+import hydrationSignalRouter from "./routes/hydrationSignalRoutes";
 
 const app = express();
 const httpServer: HTTPServer = createServer(app);
@@ -76,6 +77,7 @@ apiRouter.use("/user", UserRouter);
 apiRouter.use("/sensor", SensorDataRouter);
 apiRouter.use("/posture", PostureDataRouter);
 apiRouter.use("/command", CommandRouter);
+apiRouter.use("/hydrationSignal", hydrationSignalRouter);
 
 // MQTT
 connectMqttClient();
