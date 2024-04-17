@@ -29,3 +29,31 @@ paths:
       responses:
         200:
           description: "Successful prediction"          
+  
+  /predict-hydration-time:
+    get:  
+      operationId: "predict.hydrationTime"
+      tags:
+        - Predict time until next hydration
+      summary: "Predict time until next hydration"
+      description: "Predicts the time until the next hydration based on temperature, humidity, and other factors."
+      parameters:
+        - name: hour
+          in: query
+          description: Hour of the day
+          type: integer
+        - name: day_of_week
+          in: query
+          description: Day of the week 
+          type: integer
+        - name: temperature
+          in: query
+          description: Temperature in Celsius
+          type: number
+        - name: humidity
+          in: query
+          description: Humidity percentage
+          type: number
+      responses:
+        200:
+          description: "Successful prediction of hydration time"

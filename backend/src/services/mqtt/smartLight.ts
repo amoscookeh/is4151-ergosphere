@@ -3,7 +3,7 @@ import {
   sendLightControlCommand,
 } from "../lightControl";
 
-const base_uri = "http://127.0.0.1:5000/";
+const base_uri = "http://127.0.0.1:5001/";
 const lightcluster_uri = base_uri + "api/predict-light";
 
 export function optimiseLight(lightLevel: number) {

@@ -16,7 +16,7 @@ import {
   SliderThumb,
   ButtonGroup,
 } from "@chakra-ui/react";
-import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
+import { MdWbSunny, MdEmojiEmotions, MdLocalDrink, MdWaterDrop } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
 import Posture from "../components/Posture";
 import {
@@ -28,6 +28,7 @@ import { useAuth } from "../context/authContext";
 import { adjustBrightness, changeColor } from "../services/api/command";
 
 const Dashboard: React.FC = () => {
+  const [timeToHydrate, setTimeToHydrate] = useState(0);
   const [hydrated, setHydrated] = useState<boolean>(true);
   const [temp, setTemp] = useState(32);
   const [humidity, setHumidity] = useState(45);
@@ -58,17 +59,21 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchHydrationStatus = async () => {
       try {
-        const response = await apiFetchHydrationStatus();
-        setHydrated(!response);
+        const response = await apiFetchHydrationStatus(userId);
+        console.log(response)
+        setTimeToHydrate(Math.round(response * 60));
       } catch (error) {
         console.error("Error fetching hydration status:", error);
       }
     };
-
-    const interval = setInterval(fetchHydrationStatus, 3600000); // Check every 1 hour
-
-    return () => clearInterval(interval);
+  
+    fetchHydrationStatus();
+    const interval = setInterval(fetchHydrationStatus, 30 * 60 * 1000);
+    return () => {
+      clearInterval(interval)
+    }
   }, []);
+  
 
   useEffect(() => {
     const optimizeLightLevels = async () => {
@@ -143,6 +148,10 @@ const Dashboard: React.FC = () => {
               <Icon as={MdWbSunny} color="yellow.400" /> Light Intensity: {lux}{" "}
               Lux
             </Text>
+            <Text fontSize="2xl">
+              <Icon as={MdWaterDrop} color="yellow.400" /> Time to hydrate: {timeToHydrate}{" "}
+              mins
+            </Text>
             <Slider
               defaultValue={1}
               min={0}
@@ -190,6 +199,7 @@ const Dashboard: React.FC = () => {
                 Orange
               </Button>
             </ButtonGroup>
+
           </Stack>
           <Box
             mt={6}
