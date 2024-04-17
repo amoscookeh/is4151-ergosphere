@@ -34,6 +34,11 @@ const insertSensorData = async (
   return sensorData;
 };
 
+const optimiseLightData = async (lightLevel: number): Promise<number> => {
+  const outputIntensity = await optimiseLight(lightLevel);
+  return outputIntensity;
+};
+
 /* Delete sensor data */
 const deleteSensorData = async (sensorId: string): Promise<boolean> => {
   try {
@@ -44,4 +49,9 @@ const deleteSensorData = async (sensorId: string): Promise<boolean> => {
   return true;
 };
 
-export { getAllSensorData, insertSensorData, deleteSensorData };
+export {
+  getAllSensorData,
+  insertSensorData,
+  optimiseLightData,
+  deleteSensorData,
+};
