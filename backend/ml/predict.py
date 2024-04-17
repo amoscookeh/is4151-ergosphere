@@ -34,7 +34,8 @@ def hydrationTime(hour, day_of_week, temperature, humidity):
 
     try:
         # Load data from CSV file
-        df = pd.read_csv('/backend/ml/data/temp_humidity.csv', parse_dates=['timestamp', 'last_drank'])
+        file_path = os.getcwd() + '/backend/ml/data/temp_humidity.csv'
+        df = pd.read_csv(file_path, parse_dates=['timestamp', 'last_drank'])
 
         # Calculate the time in hours until the next hydration
         df['time_until_next_hydration'] = (df['timestamp'] - df['last_drank']).dt.total_seconds() / 3600
