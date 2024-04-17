@@ -10,6 +10,11 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { MdWbSunny, MdEmojiEmotions, MdLocalDrink } from "react-icons/md";
 import { FaTemperatureHigh, FaTint } from "react-icons/fa";
@@ -20,6 +25,7 @@ import {
 } from "../services/api/sensorData";
 import { fetchHydrationStatus as apiFetchHydrationStatus } from "../services/api/hydrationSignal";
 import { useAuth } from "../context/authContext";
+import { adjustBrightness, changeColor } from "../services/api/command";
 
 const Dashboard: React.FC = () => {
   const [hydrated, setHydrated] = useState<boolean>(true);
@@ -28,6 +34,16 @@ const Dashboard: React.FC = () => {
   const [lux, setLux] = useState(655);
   const { userId } = useAuth();
   const toast = useToast();
+
+  const adjustLight = (intensity: number) => {
+    console.log("Adjusting light intensity:", intensity);
+    adjustBrightness(intensity);
+  };
+
+  const adjustLightColor = (color: string) => {
+    console.log("Adjusting light color:", color);
+    changeColor(color);
+  };
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -95,7 +111,7 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    const interval = setInterval(optimizeLightLevels, 30000); // Check every 1 hour
+    const interval = setInterval(optimizeLightLevels, 30000); // Check every 30 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -127,6 +143,53 @@ const Dashboard: React.FC = () => {
               <Icon as={MdWbSunny} color="yellow.400" /> Light Intensity: {lux}{" "}
               Lux
             </Text>
+            <Slider
+              defaultValue={1}
+              min={0}
+              max={1}
+              step={0.1}
+              onChange={adjustLight}
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+            <ButtonGroup variant="solid" spacing={4}>
+              <Button colorScheme="red" onClick={() => adjustLightColor("red")}>
+                Red
+              </Button>
+              <Button
+                colorScheme="yellow"
+                onClick={() => adjustLightColor("yellow")}
+              >
+                Yellow
+              </Button>
+              <Button
+                colorScheme="green"
+                onClick={() => adjustLightColor("green")}
+              >
+                Green
+              </Button>
+              <Button
+                colorScheme="blue"
+                onClick={() => adjustLightColor("blue")}
+              >
+                Blue
+              </Button>
+              <Button
+                colorScheme="gray"
+                onClick={() => adjustLightColor("white")}
+              >
+                White
+              </Button>
+              <Button
+                colorScheme="orange"
+                onClick={() => adjustLightColor("orange")}
+              >
+                Orange
+              </Button>
+            </ButtonGroup>
           </Stack>
           <Box
             mt={6}
