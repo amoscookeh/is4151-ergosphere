@@ -1,24 +1,20 @@
 import express from "express";
 import { createServer, Server as HTTPServer } from "http";
-import { sampleFetch } from "./services/database/sample";
+import WebSocket, { WebSocketServer } from "ws";
 import getEnv from "./services/envHandler";
-<<<<<<< Updated upstream
-=======
 import cors from "cors";
 import UserRouter from "./routes/userRoutes";
 import SensorDataRouter from "./routes/sensorRoutes";
 import PostureDataRouter from "./routes/postureRoutes";
 import { connectMqttClient } from "./services/mqtt/mqttClient";
 import CommandRouter from "./routes/commandRoutes";
->>>>>>> Stashed changes
 
 const app = express();
 const httpServer: HTTPServer = createServer(app);
+const wss = new WebSocketServer({ server: httpServer });
 
 // Middleware
 app.use(express.json());
-<<<<<<< Updated upstream
-=======
 app.use(cors());
 
 // Web Sockets
@@ -83,12 +79,10 @@ apiRouter.use("/command", CommandRouter);
 
 // MQTT
 connectMqttClient();
->>>>>>> Stashed changes
 
 // Routes
-app.get("/", (req, res) => res.send("ErgoSphere API is running"));
-// Route to test database connection
-app.get("/test_db", async (req, res) => res.send(await sampleFetch()));
+app.get("/", (req, res) => res.send("ErgoSphere Backend is running"));
+app.use("/api", apiRouter);
 
 // Start the server
 const PORT = getEnv("REACT_APP_BACKEND_PORT") || 3000;
